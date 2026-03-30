@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FOLDER | Arquitectura & Visualización</title>
+    
+    <style>
+        /* 1. CONFIGURACIÓN GLOBAL Y PALETA DE COLORES */
+        html { 
+            scroll-behavior: smooth; /* Navegación suave */
+            /* Definimos Century Gothic como la fuente principal */
+            font-family: 'Century Gothic', AppleGothic, 'Heiti SC', sans-serif;
+            background-color: #001a33; /* FONDO AZUL OSCURO GLOBAL */
+            color: #99e6ff; /* TEXTO CELESTE CLARO GLOBAL */
+        }
+
+        body {
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* 2. NAVEGACIÓN (MENÚ) */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            position: fixed; /* Se queda arriba */
+            top: 0;
+            width: 90%;
+            /* Fondo azul oscuro con transparencia */
+            background: rgba(0, 26, 51, 0.95);
+            z-index: 1000;
+            border-bottom: 1px solid #003366; /* Línea divisoria sutil */
+        }
+
+        .logo { 
+            font-weight: bold; 
+            letter-spacing: 4px; 
+            font-size: 22px; 
+            text-transform: uppercase;
+            color: #99e6ff; /* Celeste claro */
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #99e6ff; /* Celeste claro */
+            margin-left: 25px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
+
+        .menu a:hover { 
+            color: #ffffff; /* Blanco al pasar el mouse */
+        }
+
+        /* 3. PORTADA (HERO) */
+        .hero {
+            height: 100vh;
+            /* Imagen de fondo con filtro oscuro para que resalte el texto celeste */
+            background: linear-gradient(rgba(0, 10, 20, 0.5), rgba(0, 10, 20, 0.7)), 
+                        url('hero.jpg') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff; /* Texto de portada en blanco para máximo impacto */
+            text-align: center;
+        }
+
+        .hero h1 { 
+            font-size: clamp(50px, 10vw, 90px); /* Tamaño responsivo */
+            font-weight: 200; 
+            margin: 0; 
+            text-transform: uppercase; 
+            letter-spacing: 15px; 
+            color: #99e6ff; /* NOMBRE EN CELESTE */
+        }
+
+        .hero p { 
+            letter-spacing: 6px; 
+            font-weight: 300; 
+            margin-top: 15px; 
+            color: #ffffff; /* Subtítulo en blanco */
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        /* 4. SECCIONES GENERALES */
+        section { 
+            padding: 120px 10%; 
+        }
+
+        h2 { 
+            font-weight: 200; 
+            font-size: 36px; 
+            text-transform: uppercase; 
+            letter-spacing: 5px; 
+            margin-bottom: 60px; 
+            border-left: 3px solid #99e6ff; /* Detalle celeste al costado */
+            padding-left: 20px;
+            color: #ffffff; /* Títulos de sección en blanco */
+        }
+
+        /* 5. GALERÍA GRID (PROYECTOS) */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+        }
+
+        .item { 
+            position: relative; 
+            overflow: hidden; 
+            aspect-ratio: 16/9; 
+            background: #00264d; /* Fondo azul un poco más claro para la carga */
+            border: 1px solid #003366;
+        }
+
+        .item img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            transition: 0.7s ease; 
+            opacity: 0.9; /* Un poco opacas por defecto */
+        }
+
+        .item:hover img { 
+            transform: scale(1.1); /* Zoom al pasar el mouse */
+            opacity: 1; /* Brillo total al pasar el mouse */
+        }
+
+        .info {
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            padding: 30px;
+            /* Degradado oscuro para que se lea el texto celeste */
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            color: #99e6ff; /* Texto celeste */
+            width: 100%; 
+            opacity: 0; 
+            transition: 0.5s;
+        }
+
+        .item:hover .info { 
+            opacity: 1; /* Aparece al pasar el mouse */
+        }
+
+        .info h3 { margin: 0; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; }
+        .info p { margin: 5px 0 0; font-size: 13px; color: #ffffff; }
+
+        /* 6. SHOWROOM VIRTUAL */
+        #showroom { 
+            background: #000d1a; /* Variación de azul muy oscuro */
+            color: #ffffff; 
+            text-align: center; 
+        }
+
+        .viewer-360 {
+            width: 100%; 
+            height: 550px; 
+            background: #001429; /* Fondo del visor */
+            border: 2px solid #003366; /* Borde celeste oscuro */
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        /* 7. COTIZADOR */
+        #cotizador { 
+            background: #001a33; /* Mismo fondo global */
+            text-align: center; 
+        }
+
+        .calc-card {
+            max-width: 650px; 
+            margin: auto; 
+            background: #00264d; /* Azul medio para resaltar la tarjeta */
+            padding: 60px;
+            border: 1px solid #004080; /* Borde celeste oscuro */
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3); /* Sombra suave */
+        }
+
+        .calc-card p { color: #ffffff; } /* Texto descriptivo en blanco */
+
+        input[type="number"] {
+            width: 100%; 
+            padding: 20px 0; 
+            border: none; 
+            border-bottom: 2px solid #99e6ff; /* Línea celeste */
+            background: transparent; /* Fondo transparente */
+            color: #99e6ff; /* Texto celeste al escribir */
+            font-size: 40px; 
+            text-align: center; 
+            outline: none; 
+            margin: 30px 0; 
+            font-weight: 200;
+            font-family: 'Century Gothic', sans-serif;
+        }
+
+        /* Color del texto placeholder (el "m2 de obra") */
+        input[type="number"]::placeholder { color: #004080; }
+
+        .total-display { 
+            font-size: 56px; 
+            font-weight: bold; 
+            margin: 15px 0; 
+            color: #99e6ff; /* MONTO EN CELESTE LLAMATIVO */
+        }
+
+        /* 8. CONTACTO */
+        #contacto { 
+            text-align: center; 
+            background: #000d1a; /* Variación de azul muy oscuro */
+        }
+
+        #contacto p { color: #ffffff; font-size: 18px; }
+
+        .btn-whatsapp {
+            display: inline-block; 
+            padding: 22px 60px; 
+            background: #99e6ff; /* FONDO CELESTE CLARO */
+            color: #001a33; /* TEXTO AZUL OSCURO (Contraste invertido) */
+            text-decoration: none; 
+            letter-spacing: 3px; 
+            font-size: 14px; 
+            text-transform: uppercase;
+            margin-top: 40px; 
+            transition: 0.3s; 
+            border-radius: 2px;
+            font-weight: bold;
+        }
+
+        .btn-whatsapp:hover { 
+            background: #ffffff; /* Blanco al pasar el mouse */
+            transform: translateY(-5px); /* Pequeño salto hacia arriba */
+            box-shadow: 0 10px 20px rgba(153, 230, 255, 0.3); /* Brillo celeste */
+        }
+
+        /* 9. FOOTER */
+        footer { 
+            padding: 50px; 
+            text-align: center; 
+            font-size: 11px; 
+            color: #004080; /* Celeste muy oscuro */
+            letter-spacing: 2px; 
+            background: #000a14;
+            text-transform: uppercase;
+        }
+
+        /* 10. RESPONSIVE (ADAPTACIÓN A MÓVILES) */
+        @media (max-width: 768px) {
+            nav { flex-direction: column; gap: 15px; padding: 20px; }
+            .menu a { margin: 0 10px; font-size: 10px; }
+            section { padding: 80px 5%; }
+            .grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 50px; letter-spacing: 8px; }
+            .total-display { font-size: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">FOLDER</div>
+        <div class="menu">
+            <a href="#">Inicio</a>
+            <a href="#proyectos">Proyectos</a>
+            <a href="#showroom">Showroom</a>
+            <a href="#cotizador">Cotizador</a>
+            <a href="#contacto">Contacto</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div>
+            <h1>FOLDER</h1>
+            <p>ARQUITECTURA & VISUALIZACIÓN 3D</p>
+        </div>
+    </header>
+
+    <section id="proyectos">
+        <h2>Proyectos Seleccionados</h2>
+        <div class="grid">
+            <div class="item">
+                <img src="proyect1.jpg" alt="Obra 1">
+                <div class="info"><h3>Residencia del Lago</h3><p>Encarnación, Paraguay</p></div>
+            </div>
+            <div class="item">
+                <img src="proyect2.jpg" alt="Obra 2">
+                <div class="info"><h3>Edificio Corporativo</h3><p>Asunción, Paraguay</p></div>
+            </div>
+            <div class="item">
+                <img src="proyect3.jpg" alt="Obra 3">
+                <div class="info"><h3>Vivienda Mínima </h3><p>Itapúa, Paraguay</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="showroom">
+        <h2>Showroom Interactive 360°</h2>
+        <p style="color: #99e6ff; margin-top: -30px; margin-bottom: 50px;">Explorá nuestros diseños en una experiencia inmersiva.</p>
+        <div class="viewer-360">
+            <p style="color: #003366; font-style: italic; letter-spacing: 2px;">[ Insertar Render 360° Interactiva ]</p>
+        </div>
+    </section>
+
+    <section id="cotizador">
+        <div class="calc-card">
+            <h2>Cotizador de Proyecto</h2>
+            <p>Inversión base de proyecto ejecutivo: <strong style="color: #99e6ff;">60.000 Gs. / m²</strong></p>
+            
+            <input type="number" id="inputM2" placeholder="m2 de obra">
+            
+            <div style="color: #ffffff; font-size: 12px; text-transform: uppercase; letter-spacing: 3px;">Inversión Estimada</div>
+            <div class="total-display"><span id="montoTotal">0</span> <span style="font-size: 24px; font-weight: 300;">Gs.</span></div>
+            <p style="font-size: 12px; color: #004080; margin-top: 20px;">*Monto sujeto a variaciones según complejidad.</p>
+        </div>
+    </section>
+
+    <section id="contacto">
+        <h2>¿Listo para empezar tu proyecto?</h2>
+        <p>Hablemos sobre tus ideas y cómo podemos visualizarlas.</p>
+        <a href="https://wa.me/595975175406?text=Hola%20FOLDER,%20vi%20tu%20portfolio%20y%20me%20gustaría%20consultar%20sobre%20un%20proyecto." 
+           class="btn-whatsapp" 
+           target="_blank">
+           Contactar por WhatsApp
+        </a>
+    </section>
+
+    <footer>
+        &copy; 2026 FOLDER ARQUITECTURA - ENCARNACIÓN, PARAGUAY - TODOS LOS DERECHOS RESERVADOS
+    </footer>
+
+    <script>
+        // Obtenemos los elementos una sola vez para mejorar el rendimiento
+        const inputM2 = document.getElementById('inputM2');
+        const montoTotal = document.getElementById('montoTotal');
+        const costoM2 = 60000; // Valor fijo por m2
+
+        // Escuchamos el evento de escritura (input)
+        inputM2.addEventListener('input', function() {
+            // Obtenemos el valor, si está vacío usamos 0
+            const metros = parseFloat(this.value) || 0;
+            
+            // Calculamos el total
+            const total = metros * costoM2;
+            
+            // Formateamos el número con puntos de miles (estilo Paraguay)
+            montoTotal.innerText = total.toLocaleString('es-PY');
+        });
+    </script>
+
+</body>
+</html>
