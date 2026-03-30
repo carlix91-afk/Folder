@@ -3,169 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FOLDER | Arquitectura & Experiencia 360</title>
+    <title>FOLDER | Inmersión Arquitectónica</title>
     
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/image-map-resizer/1.0.10/js/imageMapResizer.min.js"></script>
+
     <style>
-        /* 1. CONFIGURACIÓN GLOBAL */
-        html { scroll-behavior: smooth; font-family: 'Century Gothic', sans-serif; background-color: #001a33; color: #99e6ff; }
-        body { margin: 0; line-height: 1.6; }
-
-        /* 2. NAVEGACIÓN */
-        nav {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 5%; position: fixed; top: 0; width: 90%;
-            background: rgba(0, 26, 51, 0.95); z-index: 1000; border-bottom: 1px solid #003366;
+        :root {
+            --bg: #001020; --accent: #FFD700; --text: #ffffff; --muted: #6688aa;
+            --ease: cubic-bezier(0.23, 1, 0.32, 1);
         }
-        .logo { font-weight: bold; letter-spacing: 4px; font-size: 22px; text-transform: uppercase; }
-        .menu a { text-decoration: none; color: #99e6ff; margin-left: 25px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* 3. PORTADA */
-        .hero {
-            height: 100vh;
-            background: linear-gradient(rgba(0, 10, 20, 0.5), rgba(0, 10, 20, 0.7)), url('hero.jpg') center/cover no-repeat;
-            display: flex; align-items: center; justify-content: center; text-align: center;
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; font-family: 'Montserrat', sans-serif !important; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        /* CURSOR AMARILLO SÓLIDO */
+        #cursor-square { 
+            width: 12px; height: 12px; background: var(--accent); 
+            position: fixed; pointer-events: none; z-index: 10000000; 
+            transform: translate(-50%, -50%); transition: transform 0.08s ease-out; 
         }
-        .hero h1 { font-size: clamp(50px, 10vw, 90px); font-weight: 200; margin: 0; text-transform: uppercase; letter-spacing: 15px; }
 
-        /* 4. SECCIONES */
-        section { padding: 100px 10%; }
-        h2 { font-weight: 200; font-size: 32px; text-transform: uppercase; letter-spacing: 5px; margin-bottom: 40px; border-left: 3px solid #99e6ff; padding-left: 20px; color: #ffffff; }
+        /* NAVEGACIÓN */
+        nav { position: fixed; top: 0; width: 100%; padding: 25px 6%; display: flex; justify-content: space-between; align-items: center; z-index: 9000; background: rgba(0, 16, 32, 0.1); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.03); opacity: 0; }
+        .logo-link { text-decoration: none; color: inherit; }
+        .logo { font-size: 18px; letter-spacing: 6px; font-weight: 800; text-transform: uppercase; }
+        .logo:hover { animation: glitch-vibe 0.2s infinite; color: var(--accent); }
+        .nav-links a { text-decoration: none; color: var(--text); font-size: 10px; text-transform: uppercase; letter-spacing: 2px; font-weight: 500; opacity: 0.6; margin-left: 30px; transition: 0.4s; }
+        .nav-links a:hover { opacity: 1; color: var(--accent); }
 
-        /* 5. MASTERPLAN INTERACTIVO */
-        #masterplan { background-color: #000d1a; text-align: center; }
-        .masterplan-container { position: relative; display: inline-block; max-width: 100%; border: 1px solid #003366; }
-        .masterplan-container img { width: 100%; height: auto; display: block; opacity: 0.9; }
+        /* HERO */
+        .hero { height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: #000; }
+        .hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('hero.jpg') center/cover no-repeat; z-index: 1; }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,16,32,0.1), var(--bg)); z-index: 2; }
+        .hero h1 { font-size: clamp(40px, 10vw, 120px); font-weight: 900; z-index: 3; text-align: center; text-transform: uppercase; letter-spacing: -2px; text-shadow: 3px 0 0 rgba(255, 215, 0, 0.3), -3px 0 0 rgba(255, 0, 80, 0.2); }
 
-        /* 6. TOUR 360 KUULA */
-        #tour-360 { background-color: #001a33; text-align: center; }
-        .kuula-wrapper { border: 1px solid #003366; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden; }
+        /* SECCIONES */
+        section { padding: 140px 10%; opacity: 0; transform: translateY(30px); }
+        .tag { font-size: 10px; letter-spacing: 5px; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 20px; font-weight: 700; }
+        h2 { font-size: 44px; font-weight: 800; margin-bottom: 50px; text-transform: uppercase; letter-spacing: -1px; position: relative; display: inline-block; }
+        h2::after { content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 2px; background: var(--accent); box-shadow: 0 0 10px var(--accent); opacity: 0; animation: scan 4s infinite ease-in-out; }
+
+        /* GRID PORTFOLIO */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .work-item { position: relative; aspect-ratio: 16/10; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.05); }
+        .work-item img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.4); transition: 1s var(--ease); }
+        .work-item:hover img { filter: grayscale(0); transform: scale(1.03); }
+
+        /* LIGHTBOX */
+        #lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,10,32,0.98); z-index: 2000000; display: none; align-items: center; justify-content: center; }
+        #lightbox img { max-width: 90%; max-height: 85%; border: none !important; object-fit: contain; }
+        .nav-gallery { position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; padding: 0 40px; pointer-events: none; }
+        .nav-gallery span { font-size: 30px; color: var(--accent); pointer-events: auto; cursor: pointer; padding: 20px; transition: 0.3s; opacity: 0.5; }
+        .nav-gallery span:hover { opacity: 1; transform: scale(1.2); }
+
+        /* VOLVER ARRIBA */
+        #backToTop { position: fixed; bottom: 40px; right: 40px; z-index: 9500; display: flex; flex-direction: column; align-items: center; opacity: 0; pointer-events: none; transition: 0.5s var(--ease); }
+        #backToTop span { writing-mode: vertical-rl; font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; font-weight: 700; }
+        .line-btn { width: 1px; height: 50px; background: var(--accent); }
+
+        /* TOUR & MASTERPLAN */
+        .tour-frame { width: 100%; height: 650px; border: 1px solid rgba(255,255,255,0.1); background: #000; }
+        #inputM2 { background: none; border: none; border-bottom: 1px solid var(--muted); color: var(--accent); font-size: clamp(60px, 10vw, 120px); font-weight: 100; text-align: center; outline: none; width: 100%; max-width: 600px; }
+
+        /* FOOTER & SOCIAL */
+        footer { padding: 100px 10%; background: #000a14; display: flex; justify-content: space-between; align-items: flex-end; }
+        .footer-left { display: flex; flex-direction: column; gap: 30px; }
+        .btn-contacto { border: 1px solid #fff; padding: 18px 45px; color: #fff; text-decoration: none; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; transition: 0.4s; font-weight: 700; display: inline-block; }
+        .btn-contacto:hover { background: #fff; color: #000; }
         
-        /* 7. GALERÍA GRID */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .item { position: relative; overflow: hidden; aspect-ratio: 16/9; background: #00264d; }
-        .item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.5s; }
-        .item:hover img { opacity: 1; transform: scale(1.05); }
+        .social-link { color: #fff; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: 0.3s; font-size: 11px; letter-spacing: 2px; font-weight: 600; }
+        .social-link svg { width: 20px; height: 20px; fill: currentColor; }
+        .social-link:hover { color: var(--accent); }
 
-        /* 8. COTIZADOR */
-        .calc-card {
-            max-width: 600px; margin: auto; background: #00264d; padding: 50px;
-            border: 1px solid #004080; text-align: center;
-        }
-        input[type="number"] {
-            width: 100%; padding: 15px 0; border: none; border-bottom: 2px solid #99e6ff;
-            background: transparent; color: #99e6ff; font-size: 40px; text-align: center; outline: none; margin: 20px 0;
-            font-family: 'Century Gothic', sans-serif;
-        }
-        .total-display { font-size: 50px; font-weight: bold; color: #99e6ff; }
-
-        /* 9. BOTÓN WHATSAPP */
-        .btn-whatsapp {
-            display: inline-block; padding: 20px 50px; background: #99e6ff; color: #001a33;
-            text-decoration: none; letter-spacing: 3px; font-size: 14px; text-transform: uppercase;
-            margin-top: 30px; font-weight: bold; transition: 0.3s;
-        }
-        .btn-whatsapp:hover { background: #ffffff; }
-
-        footer { padding: 40px; text-align: center; font-size: 10px; color: #004080; letter-spacing: 2px; background: #000a14; }
+        @keyframes scan { 0% { top: 0; opacity: 0; } 50% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+        @keyframes glitch-vibe { 0% { transform: translate(0); } 20% { transform: translate(-2px, 1px); } 40% { transform: translate(-2px, -1px); } 60% { transform: translate(2px, 1px); } 80% { transform: translate(2px, -1px); } 100% { transform: translate(0); } }
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; display: flex; align-items: center; justify-content: center; }
+        @media (max-width: 900px) { #cursor-square { display: none; } * { cursor: auto !important; } .tour-frame { height: 400px; } footer { flex-direction: column; align-items: flex-start; gap: 50px; } }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">FOLDER</div>
-        <div class="menu">
-            <a href="#">Inicio</a>
+    <div id="loader"><h2 style="font-weight:900; letter-spacing:15px; color: var(--accent);">FOLDER</h2></div>
+    <div id="cursor-square"></div>
+
+    <div id="backToTop" onclick="window.scrollTo(0,0)">
+        <span>INICIO</span>
+        <div class="line-btn"></div>
+    </div>
+
+    <div id="lightbox" onclick="cerrarGaleria()">
+        <span style="position:absolute; top:30px; right:40px; font-size:10px; letter-spacing:3px; cursor:pointer; font-weight:800; color: var(--accent);" onclick="cerrarGaleria()">CERRAR [ESC]</span>
+        <img id="lightbox-img" src="" onclick="event.stopPropagation()">
+        <div class="nav-gallery" id="nav-gallery">
+            <span onclick="event.stopPropagation(); cambiarImagen(-1)">&lt;</span>
+            <span onclick="event.stopPropagation(); cambiarImagen(1)">&gt;</span>
+        </div>
+    </div>
+
+    <nav id="navbar">
+        <a href="https://www.instagram.com/folder_constructora/?hl=es-la" target="_blank" class="logo-link">
+            <div class="logo">FOLDER</div>
+        </a>
+        <div class="nav-links">
             <a href="#proyectos">Proyectos</a>
             <a href="#masterplan">Masterplan</a>
-            <a href="#tour-360">Tour 360°</a>
-            <a href="#cotizador">Cotizador</a>
+            <a href="#tour">Experiencia</a>
+            <a href="#cotizador">Presupuesto</a>
+            <a href="#contacto">Contacto</a>
         </div>
     </nav>
 
     <header class="hero">
-        <div>
-            <h1>FOLDER</h1>
-            <p>ARQUITECTURA & EXPERIENCIA INMERSIVA</p>
-        </div>
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <h1 id="hero-title">Arte en el Espacio.</h1>
     </header>
 
     <section id="proyectos">
-        <h2>Portfolio</h2>
+        <span class="tag">Portafolio</span>
+        <h2>Obras Seleccionadas</h2>
         <div class="grid">
-            <div class="item"><img src="proyect1.jpg"></div>
-            <div class="item"><img src="proyect2.jpg"></div>
-            <div class="item"><img src="proyect3.jpg"></div>
+            <div class="work-item" onclick="abrirGaleria('proy1')"><img src="proyect1.jpg"></div>
+            <div class="work-item" onclick="abrirGaleria('proy2')"><img src="proyect2.jpg"></div>
+            <div class="work-item" onclick="abrirGaleria('proy3')"><img src="proyect3.jpg"></div>
+            <div class="work-item" onclick="abrirGaleria('hero')"><img src="hero.jpg"></div>
         </div>
     </section>
 
     <section id="masterplan">
-        <h2>Masterplan del Proyecto</h2>
-        <p style="margin-bottom: 40px;">Hacé clic en los niveles del edificio para cotizar</p>
-        <div class="masterplan-container">
-            <img src="proyect_masterplan.jpg" usemap="#edificio-map" id="master-img">
+        <span class="tag">Interacción</span>
+        <h2>Masterplan</h2>
+        <div style="border: 1px solid rgba(255,255,255,0.1); padding: 10px; background: rgba(0,0,0,0.3);">
+            <img src="proyect_masterplan.jpg" usemap="#edificio-map" style="width:100%; display: block;">
             <map name="edificio-map">
-                <area shape="rect" coords="3274,2655,4421,2904" alt="Penthouse" href="javascript:void(0)" onclick="setM2(150, 'Penthouse')">
-                <area shape="rect" coords="3326,2887,4470,3163" alt="Nivel Estándar" href="javascript:void(0)" onclick="setM2(85, 'Unidad Tipo A')">
-                <area shape="rect" coords="3329,3159,4470,3448" alt="Planta Baja" href="javascript:void(0)" onclick="setM2(60, 'Local Comercial')">
+                <area shape="rect" coords="3274,2655,4421,2904" href="javascript:void(0)" onclick="setM2(150, 'Penthouse')">
+                <area shape="rect" coords="3326,2887,4470,3163" href="javascript:void(0)" onclick="setM2(85, 'Unidad A')">
             </map>
         </div>
     </section>
 
-    <section id="tour-360">
-        <h2>Experiencia Inmersiva 360°</h2>
-        <p style="margin-bottom: 40px; color: #99e6ff;">Recorré los espacios interiores en alta definición</p>
-        <div class="kuula-wrapper">
-            <script src="https://static.kuula.io/embed.js" data-kuula="https://kuula.co/share/collection/7Mb8x?logo=1&info=1&fs=1&vr=0&thumbs=1&inst=es" data-width="100%" data-height="640px"></script>
+    <section id="tour">
+        <span class="tag">Inmersión</span>
+        <h2>Experiencia 360°</h2>
+        <div class="tour-frame">
+            <iframe src="https://kuula.co/share/collection/7Mb8x?logo=1&info=1&fs=1&vr=0&thumbs=1&inst=es" allowfullscreen allow="xr-spatial-tracking" style="width:100%; height:100%; border:none;"></iframe>
         </div>
     </section>
 
     <section id="cotizador">
-        <div class="calc-card">
-            <h2 id="titulo-cotiza" style="border:none; padding:0; font-size: 24px;">Cotizador Automático</h2>
-            <p>Inversión: 60.000 Gs. / m²</p>
-            <input type="number" id="inputM2" placeholder="0 m2">
-            <div style="text-transform: uppercase; font-size: 11px; letter-spacing: 2px;">Total Estimado</div>
-            <div class="total-display"><span id="montoTotal">0</span> <span style="font-size: 20px;">Gs.</span></div>
+        <div style="text-align: center;">
+            <span class="tag" id="titu-coti">Calculadora de Presupuesto</span>
+            <input type="number" id="inputM2" placeholder="000" oninput="calcular()">
+            <h3 style="font-size: 45px; font-weight: 200; margin-top: 30px;"><span id="montoTotal">0</span> Gs.</h3>
         </div>
     </section>
 
-    <section id="contacto" style="text-align: center; background: #000d1a;">
-        <h2>Contacto</h2>
-        <p>Hablemos sobre tu próximo proyecto.</p>
-        <a href="https://wa.me/595975175406?text=Hola%20FOLDER,%20vengo%20desde%20la%20web." class="btn-whatsapp" target="_blank">WhatsApp Directo</a>
-    </section>
-
-    <footer>&copy; 2026 FOLDER ARQUITECTURA - ENCARNACIÓN, PY</footer>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/image-map-resizer/1.0.10/js/imageMapResizer.min.js"></script>
+    <footer id="contacto">
+        <div class="footer-left">
+            <h3 style="font-size: 40px; font-weight: 800; text-transform: uppercase; letter-spacing: -1px;">Hablemos.</h3>
+            
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <a href="https://wa.me/595975675531" class="btn-contacto" target="_blank">WhatsApp Directo</a>
+                
+                <a href="https://www.instagram.com/folder_constructora/?hl=es-la" target="_blank" class="social-link">
+                    <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    INSTAGRAM
+                </a>
+            </div>
+        </div>
+        
+        <div style="text-align: right; font-size: 10px; letter-spacing: 3px; color: var(--muted); font-weight: 600;">ENCARNACIÓN, PY<br>© 2026 FOLDER STUDIO</div>
+    </footer>
 
     <script>
-        window.onload = function() {
-            imageMapResize();
+        gsap.registerPlugin(ScrollTrigger);
+        imageMapResize();
+
+        window.addEventListener('load', () => {
+            gsap.to("#loader", { yPercent: -100, duration: 1, ease: "expo.inOut", delay: 0.5 });
+            gsap.to("#navbar", { opacity: 1, duration: 1, delay: 1.2 });
+            gsap.from("#hero-title", { opacity: 0, y: 50, duration: 1.5, ease: "expo.out", delay: 1 });
+        });
+
+        const cursorSquare = document.getElementById('cursor-square');
+        document.addEventListener('mousemove', e => {
+            gsap.to(cursorSquare, { x: e.clientX, y: e.clientY, duration: 0.08 });
+        });
+
+        ScrollTrigger.create({
+            trigger: "body", start: "top -60%", 
+            onEnter: () => gsap.to("#backToTop", { opacity: 1, pointerEvents: "auto" }),
+            onLeaveBack: () => gsap.to("#backToTop", { opacity: 0, pointerEvents: "none" })
+        });
+
+        document.querySelectorAll('section').forEach(sec => {
+            gsap.to(sec, { scrollTrigger: { trigger: sec, start: "top 85%" }, opacity: 1, y: 0, duration: 1.2 });
+        });
+
+        const galerias = {
+            'proy1': ['proyect1.jpg'],
+            'proy2': ['proyect2.jpg', 'proyect2_night.jpg', 'proyect2_int.jpg'],
+            'proy3': ['proyect3.jpg'],
+            'hero': ['hero.jpg']
         };
+        let currentImgList = [], currentIndex = 0;
 
-        const inputM2 = document.getElementById('inputM2');
-        const montoTotal = document.getElementById('montoTotal');
-        const titulo = document.getElementById('titulo-cotiza');
-        const costoM2 = 60000;
+        function abrirGaleria(id) {
+            currentImgList = galerias[id] || [id + '.jpg'];
+            currentIndex = 0;
+            document.getElementById('lightbox-img').src = currentImgList[0];
+            document.getElementById('nav-gallery').style.display = (currentImgList.length > 1) ? 'flex' : 'none';
+            document.getElementById('lightbox').style.display = 'flex';
+        }
 
-        function setM2(valor, nombre) {
-            inputM2.value = valor;
-            titulo.innerText = "Cotizando: " + nombre;
+        function cambiarImagen(dir) {
+            if (currentImgList.length <= 1) return;
+            currentIndex = (currentIndex + dir + currentImgList.length) % currentImgList.length;
+            document.getElementById('lightbox-img').src = currentImgList[currentIndex];
+        }
+
+        function cerrarGaleria() { document.getElementById('lightbox').style.display = 'none'; }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") cerrarGaleria();
+            if (document.getElementById('lightbox').style.display === 'flex') {
+                if (e.key === "ArrowRight") cambiarImagen(1);
+                if (e.key === "ArrowLeft") cambiarImagen(-1);
+            }
+        });
+
+        function calcular() {
+            const m2 = document.getElementById('inputM2').value || 0;
+            document.getElementById('montoTotal').innerText = (m2 * 60000).toLocaleString('es-PY');
+        }
+
+        function setM2(v, n) {
+            document.getElementById('inputM2').value = v;
+            document.getElementById('titu-coti').innerText = "Seleccionado: " + n;
             calcular();
             document.getElementById('cotizador').scrollIntoView({ behavior: 'smooth' });
         }
-
-        function calcular() {
-            const metros = parseFloat(inputM2.value) || 0;
-            const total = metros * costoM2;
-            montoTotal.innerText = total.toLocaleString('es-PY');
-        }
-
-        inputM2.addEventListener('input', () => {
-            titulo.innerText = "Cotizador Automático";
-            calcular();
-        });
     </script>
 </body>
 </html>
